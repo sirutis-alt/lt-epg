@@ -222,6 +222,7 @@ fetch(finalEpgUrl)
 
     document
       .querySelector("#categories-nav")
+      document.querySelector("#categories-nav")
       ?.addEventListener("click", (e) => {
         const targetButton = e.target.closest(".cat");
         if (targetButton) {
@@ -264,6 +265,9 @@ fetch(finalEpgUrl)
   });
 
 function renderChannels() {
+  // PATAISYMAS: Kiekvieną kartą perpiešiant kanalus, grįžtame į puslapio viršų
+  window.scrollTo(0, 0);
+
   const container = document.querySelector("#channels");
   if (!container) {
     console.warn("#channels konteineris nerastas.");
@@ -344,29 +348,29 @@ function renderChannels() {
       .map((prg, index) => {
         const isOpen = index === nowIndex ? " open" : "";
         return `
-				<div class="program">
-					<div class="program-time">${prg.start.substr(8, 2)}:${prg.start.substr(10, 2)}</div>
-					<button class="program-title-btn${isOpen}" type="button" data-prg="${chId}_${index}">${
+        <div class="program">
+          <div class="program-time">${prg.start.substr(8, 2)}:${prg.start.substr(10, 2)}</div>
+          <button class="program-title-btn${isOpen}" type="button" data-prg="${chId}_${index}">${
             prg.title
           }</button>
-				</div>
-				<div class="program-desc${isOpen}" id="desc-${chId}_${index}">
-					${prg.icon ? `<div class="program-image"><img src="${prg.icon}" alt=""></div>` : ""}
-					${prg.desc ? prg.desc : ""}
-				</div>
-			`;
+        </div>
+        <div class="program-desc${isOpen}" id="desc-${chId}_${index}">
+          ${prg.icon ? `<div class="program-image"><img src="${prg.icon}" alt=""></div>` : ""}
+          ${prg.desc ? prg.desc : ""}
+        </div>
+      `;
       })
       .join("");
 
     const section = document.createElement("section");
     section.className = "channel";
     section.innerHTML = `
-			<div class="channel-header">
-				${chIcon}<span>${chName}</span>
-			</div>
-			<div class="channel-underline"></div>
-			${block}
-		`;
+      <div class="channel-header">
+        ${chIcon}<span>${chName}</span>
+      </div>
+      <div class="channel-underline"></div>
+      ${block}
+    `;
     container.append(section);
   });
 }

@@ -29,3 +29,5 @@ out/
 logs
 *.log
 btn.js
+.editorconfig
+.prettierrc.js
