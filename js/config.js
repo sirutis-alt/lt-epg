@@ -1,5 +1,5 @@
 const epgUrl =
-  "https://github.com/sirutis-alt/epg/raw/refs/heads/main/epg.xml.gz";
+  "https://raw.githubusercontent.com/sirutis-alt/epg/refs/heads/main/epg.xml";
 
 const channelGroups = {
   viskas: [
