@@ -1,5 +1,5 @@
 const epgUrl =
-  "https://epg-tv-programa-public.s3.eu-central-1.amazonaws.com/epg.xml";
+  "https://github.com/sirutis-alt/epg/raw/refs/heads/main/epg.xml.gz";
 
 const channelGroups = {
   viskas: [
