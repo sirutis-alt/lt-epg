@@ -1,140 +1,122 @@
 <!doctype html>
 <html lang="lt">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Epg | Programa</title>
-		<link rel="stylesheet" href="css/reset.css" />
-		<link rel="stylesheet" href="css/burger.css" />
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-	</head>
 
-	<body>
-		<div class="wrapper">
-			<header class="header">
-				<div class="left">
-					<div class="logo">Epg</div>
-				</div>
-				<div class="category-date-row" id="header-date-display-row">
-					<div class="col-xs-2">
-						<h1 class="date-title" id="current-date-display">Kraunama...</h1>
-					</div>
-				</div>
-				<nav class="nav" id="nav">
-					<a href="#" class="active" data-cat="VISKAS">VISKAS</a>
-					<a href="#" data-cat="LIETUVIŠKI">LIETUVIŠKI</a>
-					<a href="#" data-cat="FILMAI">FILMAI</a>
-					<a href="#" data-cat="SPORTAS">SPORTAS</a>
-					<a href="#" data-cat="MUZIKA">MUZIKA</a>
-					<a href="#" data-cat="VAIKAMS">VAIKAMS</a>
-					<a href="#" data-cat="DOKUMENTIKA">DOKUMENTIKA</a>
-					<a href="#" data-cat="UKRAINA">UKRAINA</a>
-					<a href="#" data-cat="TOP">TOP</a>
-				</nav>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Epg | Programa</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/burger.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+</head>
 
-				<div class="burger">
-					<span></span>
-				</div>
-			</header>
-			<div class="nav-container">
-				<div class="days-and-archive-container">
-					<div class="daymenu">
-						<li class="daymeny-item archive">
-							<a href="#" target="_parent">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="16"
-									height="16"
-									fill="currentColor"
-									class="bi bi-chevron-left"
-									viewBox="0 0 16 16"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
-									/>
-								</svg>
-								<span class="sr-only">Rodyti archyvą</span>
-							</a>
-						</li>
-					</div>
-					<nav class="days-nav" id="days-nav"></nav>
-					<div class="daymenu">
-						<li class="daymeny-item archive">
-							<a href="#" target="_parent">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="16"
-									height="16"
-									fill="currentColor"
-									class="bi bi-chevron-right"
-									viewBox="0 0 16 16"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
-									/>
-								</svg>
-								<span class="sr-only">Rodyti kitas dienas</span>
-							</a>
-						</li>
-					</div>
-				</div>
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="left">
+                <div class="logo">Epg</div>
+            </div>
+            <div class="category-date-row" id="header-date-display-row">
+                <div class="col-xs-2">
+                    <h1 class="date-title" id="current-date-display">Kraunama...</h1>
+                </div>
+            </div>
+            <nav class="nav" id="nav">
+                <a href="#" class="active" data-cat="VISKAS">VISKAS</a>
+                <a href="#" data-cat="LIETUVIŠKI">LIETUVIŠKI</a>
+                <a href="#" data-cat="FILMAI">FILMAI</a>
+                <a href="#" data-cat="SPORTAS">SPORTAS</a>
+                <a href="#" data-cat="MUZIKA">MUZIKA</a>
+                <a href="#" data-cat="VAIKAMS">VAIKAMS</a>
+                <a href="#" data-cat="DOKUMENTIKA">DOKUMENTIKA</a>
+                <a href="#" data-cat="UKRAINA">UKRAINA</a>
+                <a href="#" data-cat="TOP">TOP</a>
+            </nav>
 
-				<nav class="categories-nav" id="categories-nav">
-					<button type="submit" class="cat active" data-cat="VISKAS">
-						VISKAS
-					</button>
-					<button type="submit" class="cat" data-cat="LIETUVIŠKI">
-						LIETUVIŠKI
-					</button>
-					<button type="submit" class="cat" data-cat="FILMAI">FILMAI</button>
-					<button type="submit" class="cat" data-cat="SPORTAS">SPORTAS</button>
-					<button type="submit" class="cat" data-cat="MUZIKA">MUZIKA</button>
-					<button type="submit" class="cat" data-cat="VAIKAMS">VAIKAMS</button>
-					<button type="submit" class="cat" data-cat="DOKUMENTIKA">
-						DOKUMENTIKA
-					</button>
-					<button type="submit" class="cat" data-cat="UKRAINA">UKRAINA</button>
-					<button type="submit" class="cat" data-cat="TOP">TOP</button>
-				</nav>
-			</div>
+            <div class="burger">
+                <span></span>
+            </div>
+        </header>
+        <div class="nav-container">
+            <div class="days-and-archive-container">
+                <div class="daymenu">
+                    <li class="daymeny-item archive">
+                        <a href="#" target="_parent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                            </svg>
+                            <span class="sr-only">Rodyti archyvą</span>
+                        </a>
+                    </li>
+                </div>
+                <nav class="days-nav" id="days-nav"></nav>
+                <div class="daymenu">
+                    <li class="daymeny-item archive">
+                        <a href="#" target="_parent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                            <span class="sr-only">Rodyti kitas dienas</span>
+                        </a>
+                    </li>
+                </div>
+            </div>
 
-			<main class="main">
-				<div class="date-and-search-container">
-					<div class="category-date-row" id="main-date-display-row">
-						<div class="col-xs-2">
-							<h1 class="date-title" id="current-date-display-2">
-								Kraunama...
-							</h1>
-						</div>
-					</div>
-					<div class="flex-spacer"></div>
+            <nav class="categories-nav" id="categories-nav">
+                <button type="submit" class="cat active" data-cat="VISKAS">
+                    VISKAS
+                </button>
+                <button type="submit" class="cat" data-cat="LIETUVIŠKI">
+                    LIETUVIŠKI
+                </button>
+                <button type="submit" class="cat" data-cat="FILMAI">FILMAI</button>
+                <button type="submit" class="cat" data-cat="SPORTAS">SPORTAS</button>
+                <button type="submit" class="cat" data-cat="MUZIKA">MUZIKA</button>
+                <button type="submit" class="cat" data-cat="VAIKAMS">VAIKAMS</button>
+                <button type="submit" class="cat" data-cat="DOKUMENTIKA">
+                    DOKUMENTIKA
+                </button>
+                <button type="submit" class="cat" data-cat="UKRAINA">UKRAINA</button>
+                <button type="submit" class="cat" data-cat="TOP">TOP</button>
+            </nav>
+        </div>
 
-					<div class="epg-search-block">
-						<input
-							type="text"
-							id="epg-search"
-							placeholder="Ieškoti programos, aprašymo ar kanalo..."
-							autocomplete="off"
-						/>
-					</div>
-				</div>
+        <main class="main">
+            <div class="date-and-search-container">
+                <div class="category-date-row" id="main-date-display-row">
+                    <div class="col-xs-2">
+                        <h1 class="date-title" id="current-date-display-2">
+                            Kraunama...
+                        </h1>
+                    </div>
+                </div>
+                <div class="flex-spacer"></div>
 
-				<div class="channels-grid" id="channels"></div>
-			</main>
+                <div class="epg-search-block">
+                    <input type="text" id="epg-search" placeholder="Ieškoti programos, aprašymo ar kanalo..."
+                        autocomplete="off" />
+                </div>
+            </div>
 
-			<footer class="footer">
-				<p>© 2025 Velnias. Visos teises saugomos.</p>
-			</footer>
-		</div>
+            <div class="channels-grid" id="channels"></div>
+        </main>
 
-		<script src="./js/config.js"></script>
-		<script src="./js/daymenu.js"></script>
-		<script src="./js/epg.js"></script>
-		<script src="./js/navigation.js"></script>
-		<script src="./js/burger.js"></script>
-		<script src="./js/rodykle.js"></script>
-	</body>
+        <footer class="footer">
+            <p>© 2025 Velnias. Visos teises saugomos.</p>
+        </footer>
+    </div>
+
+    <script src="./js/config.js"></script>
+    <script src="./js/daymenu.js"></script>
+    <script src="./js/epg.js"></script>
+    <script src="./js/navigation.js"></script>
+    <script src="./js/burger.js"></script>
+    <script src="./js/rodykle.js"></script>
+</body>
+
 </html>
