@@ -140,14 +140,9 @@ fetch(finalEpgUrl)
 
     return res.text();
   })
-
   .then((xmlText) => {
     const parser = new DOMParser();
-
-    const xml = parser.parseFromString(
-      xmlText,
-      "text/xml"
-    );
+    const xml = parser.parseFromString(xmlText, "text/xml");
 
     xml.querySelectorAll("channel").forEach((ch) => {
       const id = ch.getAttribute("id");
@@ -171,38 +166,23 @@ fetch(finalEpgUrl)
 
     programmes = [...xml.querySelectorAll("programme")]
       .map((prg) => {
-
-        const channel =
-          prg.getAttribute("channel");
-
-        const start =
-          prg.getAttribute("start");
-
-        const stop =
-          prg.getAttribute("stop");
+        const channel = prg.getAttribute("channel");
+        const start = prg.getAttribute("start");
+        const stop = prg.getAttribute("stop");
 
         const title =
-          prg.querySelector(
-            'title[lang="lt"]'
-          )?.textContent?.trim() || "";
+          prg.querySelector('title[lang="lt"]')?.textContent?.trim() || "";
 
         const desc =
-          prg.querySelector(
-            'desc[lang="lt"]'
-          )?.textContent?.trim() || "";
+          prg.querySelector('desc[lang="lt"]')?.textContent?.trim() || "";
 
-        const date =
-          start.split(" ")[0].substring(0, 8);
+        const date = start.split(" ")[0].substring(0, 8);
 
-        const icon =
-          prg.querySelector("icon")
-            ?.getAttribute("src") || "";
+        const icon = prg.querySelector("icon")?.getAttribute("src") || "";
 
-        const categories =
-          [...prg.querySelectorAll(
-            'category[lang="lt"]'
-          )]
-            .map(c => c.textContent.trim());
+        const categories = [
+          ...prg.querySelectorAll('category[lang="lt"]')
+        ].map(c => c.textContent.trim());
 
         return {
           channel,
@@ -216,297 +196,147 @@ fetch(finalEpgUrl)
         };
       });
 
-    if (
-      typeof renderDaysNavDayMenu !==
-      "undefined"
-    ) {
+    if (typeof renderDaysNavDayMenu !== "undefined") {
       renderDaysNavDayMenu(programmes);
     }
 
     renderChannels();
-
     syncCategories(selectedCategory);
+    centerActiveCategory(selectedCategory);
 
-    centerActiveCategory(
-      selectedCategory
-    );
+    document.querySelector("#categories-nav")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".cat");
+      if (!btn) return;
 
-    document
-      .querySelector("#categories-nav")
-      ?.addEventListener(
-        "click",
-        (e) => {
+      selectedCategory = btn.dataset.cat;
+      syncCategories(selectedCategory);
+      centerActiveCategory(selectedCategory);
+      renderChannels();
+    });
 
-          const btn =
-            e.target.closest(".cat");
+    document.querySelector(".nav")?.addEventListener("click", (e) => {
+      const link = e.target.closest("a");
+      if (!link) return;
 
-          if (!btn) return;
+      selectedCategory = link.dataset.cat;
+      syncCategories(selectedCategory);
+      centerActiveCategory(selectedCategory);
+      renderChannels();
+    });
 
-          selectedCategory =
-            btn.dataset.cat;
-
-          syncCategories(
-            selectedCategory
-          );
-
-          centerActiveCategory(
-            selectedCategory
-          );
-
-          renderChannels();
-
-        });
-
-    document
-      .querySelector(".nav")
-      ?.addEventListener(
-        "click",
-        (e) => {
-
-          const link =
-            e.target.closest("a");
-
-          if (!link) return;
-
-          selectedCategory =
-            link.dataset.cat;
-
-          syncCategories(
-            selectedCategory
-          );
-
-          centerActiveCategory(
-            selectedCategory
-          );
-
-          renderChannels();
-
-        });
-
-    document
-      .querySelector("#epg-search")
-      ?.addEventListener(
-        "input",
-        (e) => {
-
-          searchQuery =
-            e.target.value
-              .trim()
-              .toLowerCase();
-
-          renderChannels();
-
-        });
-
+    document.querySelector("#epg-search")?.addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderChannels();
+    });
   })
-
   .catch(console.error);
 
 function renderChannels() {
-
-  const container =
-    document.querySelector(
-      "#channels"
-    );
-
+  const container = document.querySelector("#channels");
   if (!container) return;
-
   container.innerHTML = "";
 
-  const selectedSlug =
-    categorySlugMap[
-    selectedCategory
-    ];
+  const selectedSlug = categorySlugMap[selectedCategory];
+  const activeChannelGroups = typeof channelGroups !== "undefined" ? channelGroups : {};
 
-  const activeChannelGroups =
-    typeof channelGroups !==
-      "undefined"
-      ? channelGroups
-      : {};
-
-  const allowedChannelIds =
-    selectedSlug
-      ? activeChannelGroups[
-      selectedSlug
-      ]
-      : null;
+  // Pasiimame tos kategorijos masyvą iš config.js (jei nėra, naudojame 'viskas')
+  const allowedChannelIds = selectedSlug ? activeChannelGroups[selectedSlug] : activeChannelGroups["viskas"];
+  if (!allowedChannelIds) return;
 
   const channelMap = {};
 
   programmes.forEach((prg) => {
-
-    if (
-      selectedDate &&
-      prg.date !== selectedDate
-    ) {
+    if (selectedDate && prg.date !== selectedDate) {
       return;
     }
 
-    if (
-      allowedChannelIds &&
-      !allowedChannelIds.includes(
-        prg.channel
-      )
-    ) {
+    if (!allowedChannelIds.includes(prg.channel)) {
       return;
     }
 
     if (searchQuery) {
-
-      const ch =
-        channels[
-        prg.channel
-        ] || {};
-
+      const ch = channels[prg.channel] || {};
       const searchableText = [
-
         prg.title,
         prg.desc,
         ch.name,
         ...prg.categories
-
       ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
-      if (
-        !searchableText.includes(
-          searchQuery
-        )
-      ) {
+      if (!searchableText.includes(searchQuery)) {
         return;
       }
     }
 
-    if (
-      !channelMap[
-      prg.channel
-      ]
-    ) {
-      channelMap[
-        prg.channel
-      ] = [];
+    if (!channelMap[prg.channel]) {
+      channelMap[prg.channel] = [];
     }
-
-    channelMap[
-      prg.channel
-    ].push(prg);
-
+    channelMap[prg.channel].push(prg);
   });
 
-  Object.keys(channelMap)
-    .forEach((chId) => {
+  // Sukame ciklą pagal config.js nustatytą masyvo eiliškumą
+  allowedChannelIds.forEach((chId) => {
+    // Jei kanalas neturi programų pasirinktai dienai ar pagal paiešką – jo nerodome
+    if (!channelMap[chId] || channelMap[chId].length === 0) return;
 
-      const ch =
-        channels[chId] || {};
+    const ch = channels[chId] || {};
+    const prgs = channelMap[chId];
 
-      const prgs =
-        channelMap[chId];
+    prgs.sort((a, b) => a.start.localeCompare(b.start));
 
-      prgs.sort(
-        (a, b) =>
-          a.start.localeCompare(
-            b.start
-          )
-      );
+    const nowIndex = getNowProgrammeIndex(prgs);
+    let html = "";
 
-      const nowIndex =
-        getNowProgrammeIndex(
-          prgs
-        );
+    prgs.forEach((prg, index) => {
+      const open = index === nowIndex ? " open" : "";
 
-      let html = "";
-
-      prgs.forEach(
-        (prg, index) => {
-
-          const open =
-            index === nowIndex
-              ? " open"
-              : "";
-
-          html += `
+      html += `
       <div class="program">
-
         <div class="program-time">
           ${prg.start.substr(8, 2)}:${prg.start.substr(10, 2)}
         </div>
-
         <button class="program-title-btn${open}" type="button" data-prg="${chId}_${index}">
           ${prg.title}
         </button>
-
       </div>
-
       <div class="program-desc${open}" id="desc-${chId}_${index}">
       ${prg.icon
-              ? `<div class="program-image">
-            <img src="${prg.icon}">
-           </div>`
-              : ""
-            }
+          ? `<div class="program-image">
+              <img src="${prg.icon}">
+             </div>`
+          : ""
+        }
       ${prg.desc}
       </div>
       `;
-        });
+    });
 
-      const section =
-        document.createElement(
-          "section"
-        );
-
-      section.className =
-        "channel";
-
-      section.innerHTML = `
+    const section = document.createElement("section");
+    section.className = "channel";
+    section.innerHTML = `
       <div class="channel-header">
-        ${ch.icon
-          ? `<img class="channel-icon" src="${ch.icon}">`
-          : ""
-        }
+        ${ch.icon ? `<img class="channel-icon" src="${ch.icon}">` : ""}
         <span>
           ${ch.name || chId}
         </span>
       </div>
-
       <div class="channel-underline"></div>
-
       ${html}
     `;
 
-      container.append(
-        section
-      );
-
-    });
+    container.append(section);
+  });
 }
 
-document.addEventListener(
-  "click",
-  (e) => {
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("program-title-btn")) {
+    const key = e.target.dataset.prg;
+    const desc = document.getElementById("desc-" + key);
 
-    if (
-      e.target.classList.contains(
-        "program-title-btn"
-      )
-    ) {
-
-      const key =
-        e.target.dataset.prg;
-
-      const desc =
-        document.getElementById(
-          "desc-" + key
-        );
-
-      e.target.classList.toggle(
-        "open"
-      );
-
-      desc?.classList.toggle(
-        "open"
-      );
-    }
-
-  });
+    e.target.classList.toggle("open");
+    desc?.classList.toggle("open");
+  }
+});

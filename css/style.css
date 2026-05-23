@@ -417,14 +417,9 @@ body {
   flex-shrink: 0;
   z-index: 100;
   min-width: 340px;
-  margin-right: auto;
 }
 
-.flex-spacer {
-  /* display: none; */
-  flex: 1;
 
-}
 
 #epg-search {
   position: relative;
