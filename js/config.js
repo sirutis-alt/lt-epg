@@ -4,9 +4,11 @@ const epgUrl =
 const channelGroups = {
   viskas: [
     "lrt-televizija_4693986",
+    "lrt-televizija_11693202",
     "lrt-plius_939654",
     "lnk_4693704",
     "tv3-lt_4693975",
+    "tv3_11693239",
     "tv3-plus_6297643",
     "btv_4430623",
     "lietuvos-rytas-tv_6290140",
@@ -14,6 +16,7 @@ const channelGroups = {
     "infotv_9760387",
     "tv1_6288597",
     "tv6-lt_4430607",
+    "tv6_11693245",
     "tv8-lt_4430628",
     "delfi-tv_4331143",
     "go3-films_4430633",
@@ -115,6 +118,7 @@ const channelGroups = {
     "mcm-top_10677836",
     "my-hits_1179183",
     "2tv_9760728",
+    "2tv_11689628",
     "pwr-gold_8112353",
     "rfm_10677919",
     "kidzone-max_9455524",

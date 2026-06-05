@@ -108,9 +108,7 @@ function centerActiveCategory(category) {
 
   if (!container) return;
 
-  const activeButton = container.querySelector(
-    `[data-cat="${category}"]`
-  );
+  const activeButton = container.querySelector(`[data-cat="${category}"]`);
 
   if (!activeButton) return;
 
@@ -127,10 +125,7 @@ function centerActiveCategory(category) {
   }, 50);
 }
 
-const finalEpgUrl =
-  typeof epgUrl !== "undefined"
-    ? epgUrl
-    : "epg.xml";
+const finalEpgUrl = typeof epgUrl !== "undefined" ? epgUrl : "epg.xml";
 
 fetch(finalEpgUrl)
   .then((res) => {
@@ -150,51 +145,44 @@ fetch(finalEpgUrl)
       channels[id] = {
         id,
         name:
-          ch.querySelector('display-name[lang="lt"]')
-            ?.textContent
-            ?.trim() ||
-          ch.querySelector("display-name")
-            ?.textContent
-            ?.trim() ||
+          ch.querySelector('display-name[lang="lt"]')?.textContent?.trim() ||
+          ch.querySelector("display-name")?.textContent?.trim() ||
           "",
 
-        icon:
-          ch.querySelector("icon")
-            ?.getAttribute("src") || "",
+        icon: ch.querySelector("icon")?.getAttribute("src") || "",
       };
     });
 
-    programmes = [...xml.querySelectorAll("programme")]
-      .map((prg) => {
-        const channel = prg.getAttribute("channel");
-        const start = prg.getAttribute("start");
-        const stop = prg.getAttribute("stop");
+    programmes = [...xml.querySelectorAll("programme")].map((prg) => {
+      const channel = prg.getAttribute("channel");
+      const start = prg.getAttribute("start");
+      const stop = prg.getAttribute("stop");
 
-        const title =
-          prg.querySelector('title[lang="lt"]')?.textContent?.trim() || "";
+      const title =
+        prg.querySelector('title[lang="lt"]')?.textContent?.trim() || "";
 
-        const desc =
-          prg.querySelector('desc[lang="lt"]')?.textContent?.trim() || "";
+      const desc =
+        prg.querySelector('desc[lang="lt"]')?.textContent?.trim() || "";
 
-        const date = start.split(" ")[0].substring(0, 8);
+      const date = start.split(" ")[0].substring(0, 8);
 
-        const icon = prg.querySelector("icon")?.getAttribute("src") || "";
+      const icon = prg.querySelector("icon")?.getAttribute("src") || "";
 
-        const categories = [
-          ...prg.querySelectorAll('category[lang="lt"]')
-        ].map(c => c.textContent.trim());
+      const categories = [...prg.querySelectorAll('category[lang="lt"]')].map(
+        (c) => c.textContent.trim(),
+      );
 
-        return {
-          channel,
-          start,
-          stop,
-          title,
-          desc,
-          date,
-          icon,
-          categories
-        };
-      });
+      return {
+        channel,
+        start,
+        stop,
+        title,
+        desc,
+        date,
+        icon,
+        categories,
+      };
+    });
 
     if (typeof renderDaysNavDayMenu !== "undefined") {
       renderDaysNavDayMenu(programmes);
@@ -204,15 +192,17 @@ fetch(finalEpgUrl)
     syncCategories(selectedCategory);
     centerActiveCategory(selectedCategory);
 
-    document.querySelector("#categories-nav")?.addEventListener("click", (e) => {
-      const btn = e.target.closest(".cat");
-      if (!btn) return;
+    document
+      .querySelector("#categories-nav")
+      ?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".cat");
+        if (!btn) return;
 
-      selectedCategory = btn.dataset.cat;
-      syncCategories(selectedCategory);
-      centerActiveCategory(selectedCategory);
-      renderChannels();
-    });
+        selectedCategory = btn.dataset.cat;
+        syncCategories(selectedCategory);
+        centerActiveCategory(selectedCategory);
+        renderChannels();
+      });
 
     document.querySelector(".nav")?.addEventListener("click", (e) => {
       const link = e.target.closest("a");
@@ -237,10 +227,13 @@ function renderChannels() {
   container.innerHTML = "";
 
   const selectedSlug = categorySlugMap[selectedCategory];
-  const activeChannelGroups = typeof channelGroups !== "undefined" ? channelGroups : {};
+  const activeChannelGroups =
+    typeof channelGroups !== "undefined" ? channelGroups : {};
 
   // Pasiimame tos kategorijos masyvą iš config.js (jei nėra, naudojame 'viskas')
-  const allowedChannelIds = selectedSlug ? activeChannelGroups[selectedSlug] : activeChannelGroups["viskas"];
+  const allowedChannelIds = selectedSlug
+    ? activeChannelGroups[selectedSlug]
+    : activeChannelGroups["viskas"];
   if (!allowedChannelIds) return;
 
   const channelMap = {};
@@ -256,12 +249,7 @@ function renderChannels() {
 
     if (searchQuery) {
       const ch = channels[prg.channel] || {};
-      const searchableText = [
-        prg.title,
-        prg.desc,
-        ch.name,
-        ...prg.categories
-      ]
+      const searchableText = [prg.title, prg.desc, ch.name, ...prg.categories]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
@@ -303,12 +291,13 @@ function renderChannels() {
         </button>
       </div>
       <div class="program-desc${open}" id="desc-${chId}_${index}">
-      ${prg.icon
+      ${
+        prg.icon
           ? `<div class="program-image">
               <img src="${prg.icon}">
              </div>`
           : ""
-        }
+      }
       ${prg.desc}
       </div>
       `;

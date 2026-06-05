@@ -99,7 +99,6 @@ body {
     border-color 0.2s ease;
 }
 
-
 .nav a:hover,
 .nav a.active {
   color: #1976d2;
@@ -419,8 +418,6 @@ body {
   min-width: 340px;
 }
 
-
-
 #epg-search {
   position: relative;
   z-index: 101;
@@ -683,11 +680,9 @@ body {
   .date-title {
     text-align: center;
   }
-
 }
 
 @media (width <=767.98px) {
-
   .day,
   .cat {
     min-width: 70px;
