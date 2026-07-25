@@ -222,6 +222,9 @@ fetch(finalEpgUrl)
   .catch(console.error);
 
 function renderChannels() {
+  // NAUJA EILUTĖ: Kaskart perjungus kategoriją/atnaujinus kanalus, puslapis grįžta į viršų
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   const container = document.querySelector("#channels");
   if (!container) return;
   container.innerHTML = "";
