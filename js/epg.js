@@ -50,6 +50,52 @@ let programmes = [];
 let selectedDate = null;
 let selectedCategory = "VISKAS";
 let searchQuery = "";
+let searchTimeout = null;
+
+// Pagalbinė funkcija: lietuviškų simbolių ir kirčių pašalinimas paieškai
+function normalizeText(text) {
+  if (!text) return "";
+  return text
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+// Pagalbinė funkcija: saugus teksto išryškinimas, atsižvelgiant į lietuviškus simbolius
+function highlightText(text, query) {
+  if (!query || !text) return text;
+
+  const terms = query.trim().split(/\s+/).filter(Boolean);
+  if (!terms.length) return text;
+
+  // Žemėlapis, padedantis Regex atpažinti lietuviškas raides nepriklausomai nuo įvesties
+  const charMap = {
+    a: "[aą]",
+    c: "[cč]",
+    e: "[eęė]",
+    i: "[iįy]",
+    s: "[sš]",
+    u: "[uųū]",
+    z: "[zž]",
+    a: "[aą]",
+  };
+
+  const patterns = terms.map((term) => {
+    // Išvalome specialius regex simbolius
+    const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    
+    // Pakeičiame paprastas raides į regex grupes, pvz. 's' -> '[sš]'
+    return normalizeText(safeTerm)
+      .split("")
+      .map((ch) => charMap[ch] || ch)
+      .join("");
+  });
+
+  const regex = new RegExp(`(${patterns.join("|")})`, "gi");
+
+  return text.replace(regex, "<mark>$1</mark>");
+}
 
 function setSelectedDate(date) {
   selectedDate = date;
@@ -214,16 +260,24 @@ fetch(finalEpgUrl)
       renderChannels();
     });
 
+    // PATOBULINTA PAIEŠKA: su debounce efektai
     document.querySelector("#epg-search")?.addEventListener("input", (e) => {
-      searchQuery = e.target.value.trim().toLowerCase();
-      renderChannels();
+      clearTimeout(searchTimeout);
+      const val = e.target.value.trim();
+
+      searchTimeout = setTimeout(() => {
+        searchQuery = val;
+        renderChannels();
+      }, 250); // Laukiama 250ms po paskutinio mygtuko paspaudimo
     });
   })
   .catch(console.error);
 
 function renderChannels() {
-  // NAUJA EILUTĖ: Kaskart perjungus kategoriją/atnaujinus kanalus, puslapis grįžta į viršų
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  // Slenkame į viršų tik jei nėra paieškos (kad netrukdytų rašant)
+  if (!searchQuery) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   const container = document.querySelector("#channels");
   if (!container) return;
@@ -233,13 +287,17 @@ function renderChannels() {
   const activeChannelGroups =
     typeof channelGroups !== "undefined" ? channelGroups : {};
 
-  // Pasiimame tos kategorijos masyvą iš config.js (jei nėra, naudojame 'viskas')
   const allowedChannelIds = selectedSlug
     ? activeChannelGroups[selectedSlug]
     : activeChannelGroups["viskas"];
   if (!allowedChannelIds) return;
 
   const channelMap = {};
+
+  // Paieškos žodžių paruošimas (normalizuotas)
+  const searchTerms = searchQuery
+    ? normalizeText(searchQuery).split(/\s+/).filter(Boolean)
+    : [];
 
   programmes.forEach((prg) => {
     if (selectedDate && prg.date !== selectedDate) {
@@ -250,16 +308,18 @@ function renderChannels() {
       return;
     }
 
-    if (searchQuery) {
+    // Smart-search filtravimas
+    if (searchTerms.length > 0) {
       const ch = channels[prg.channel] || {};
-      const searchableText = [prg.title, prg.desc, ch.name, ...prg.categories]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+      const fullTextToSearch = normalizeText(
+        [prg.title, prg.desc, ch.name, ...prg.categories].join(" "),
+      );
 
-      if (!searchableText.includes(searchQuery)) {
-        return;
-      }
+      // Turi atitikti VISUS įvestus žodžius
+      const matches = searchTerms.every((term) =>
+        fullTextToSearch.includes(term),
+      );
+      if (!matches) return;
     }
 
     if (!channelMap[prg.channel]) {
@@ -268,9 +328,9 @@ function renderChannels() {
     channelMap[prg.channel].push(prg);
   });
 
-  // Sukame ciklą pagal config.js nustatytą masyvo eiliškumą
+  let renderedCount = 0;
+
   allowedChannelIds.forEach((chId) => {
-    // Jei kanalas neturi programų pasirinktai dienai ar pagal paiešką – jo nerodome
     if (!channelMap[chId] || channelMap[chId].length === 0) return;
 
     const ch = channels[chId] || {};
@@ -284,13 +344,21 @@ function renderChannels() {
     prgs.forEach((prg, index) => {
       const open = index === nowIndex ? " open" : "";
 
+      // Jei vyksta paieška — išryškiname sutampančius žodžius pavadinime ir aprašyme
+      const displayTitle = searchQuery
+        ? highlightText(prg.title, searchQuery)
+        : prg.title;
+      const displayDesc = searchQuery
+        ? highlightText(prg.desc, searchQuery)
+        : prg.desc;
+
       html += `
       <div class="program">
         <div class="program-time">
           ${prg.start.substr(8, 2)}:${prg.start.substr(10, 2)}
         </div>
         <button class="program-title-btn${open}" type="button" data-prg="${chId}_${index}">
-          ${prg.title}
+          ${displayTitle}
         </button>
       </div>
       <div class="program-desc${open}" id="desc-${chId}_${index}">
@@ -301,7 +369,7 @@ function renderChannels() {
              </div>`
           : ""
       }
-      ${prg.desc}
+      ${displayDesc}
       </div>
       `;
     });
@@ -320,7 +388,17 @@ function renderChannels() {
     `;
 
     container.append(section);
+    renderedCount++;
   });
+
+  // Pranešimas, jei pagal paiešką nieko nerasta
+  if (renderedCount === 0 && searchQuery) {
+    container.innerHTML = `
+      <div class="no-results" style="text-align: center; padding: 40px 20px; opacity: 0.8;">
+        <p>Pagal paiešką <strong>"${searchQuery}"</strong> nieko nerasta.</p>
+      </div>
+    `;
+  }
 }
 
 document.addEventListener("click", (e) => {
