@@ -1,5 +1,6 @@
 const epgUrl =
-  "https://raw.githubusercontent.com/sirutis-alt/epg/refs/heads/main/epg.xml";
+  "https://raw.githubusercontent.com/sirutis-alt/epg/refs/heads/main/epg.xml?v=" +
+  Date.now();
 
 const channelGroups = {
   viskas: [
