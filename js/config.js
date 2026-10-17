@@ -152,7 +152,7 @@ const channelGroups = {
     "star_family_6343756",
     "super_6342375",
     "super_baltic_6342971",
-    "bbc_news_939669",
+    "bbc-world-news_939669",
     "cnn_6658307",
     "euronews_1179184",
   ],
